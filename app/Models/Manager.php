@@ -10,4 +10,9 @@ class Manager extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'email', 'password', 'role'];
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
 }

@@ -22,3 +22,11 @@ Route::prefix('managers')->group(function () {
     Route::post('/', [ManagerController::class, 'store']);
     Route::post('/login', [ManagerController::class, 'login']);
 });
+
+Route::prefix('articles')->group(function () {
+    Route::get('/', [ArticleController::class, 'index']);
+    Route::post('/', [ArticleController::class, 'store']);
+    Route::get('/{id}', [ArticleController::class, 'show']);
+    Route::delete('/{id}', [ArticleController::class, 'destroy']);
+    Route::put('/{id}', [ArticleController::class, 'update']);
+});
