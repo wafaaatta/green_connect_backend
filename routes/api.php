@@ -12,4 +12,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('article-categories')->group(function () {
     Route::get('/', [ArticleCategoryController::class, 'index']);
     Route::post('/', [ArticleCategoryController::class, 'store']);
+    Route::get('/{id}', [ArticleCategoryController::class, 'show']);
+    Route::put('/{id}', [ArticleCategoryController::class, 'update']);
+    Route::delete('/{id}', [ArticleCategoryController::class, 'destroy']);
 });

@@ -18,14 +18,6 @@ class ArticleCategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -48,32 +40,38 @@ class ArticleCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ArticleCategory $articleCategory)
+    public function show(Request $request, $id)
     {
-        //
-    }
+        $articleCategory = ArticleCategory::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ArticleCategory $articleCategory)
-    {
-        //
+        return response()->json($articleCategory);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArticleCategory $articleCategory)
+    public function update(Request $request, $id)
     {
-        //
+        $articleCategory = ArticleCategory::find($id);
+
+        if (!$articleCategory) {
+            return response()->json(['message' => 'Article Category not found'], 404);
+        }
+
+        $articleCategory->name = $request->name ?? $articleCategory->name;
+        $articleCategory->save();
+
+        return response()->json($articleCategory);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ArticleCategory $articleCategory)
+    public function destroy(Request $request, $id)
     {
-        //
+        $articleCategory = ArticleCategory::find($id);
+        $articleCategory->delete();
+
+        return response()->json($articleCategory);
     }
 }
