@@ -4,62 +4,68 @@ namespace App\Http\Controllers;
 
 use App\Models\Manager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ManagerController extends Controller
 {
+    public function store(Request $request){
+        $validation = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:managers',
+            'password' => 'required|min:6',
+            'role' => 'required|in:admin,supervisor'
+        ]);
+        if ($validation->fails()) {
+            return response()->json($validation->errors(), 400);
+        }
+        $manager = Manager::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role
+        ]);
+        return response()->json($manager);
+    }
     /**
-     * Display a listing of the resource.
+     * Handle manager login and return a token.
      */
-    public function index()
+    public function login(Request $request)
     {
-        //
+        // Validate the incoming request
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        // Find the manager by email
+        $manager = Manager::where('email', $request->email)->first();
+
+        // Check if the manager exists and if the password is correct
+        if (!$manager || !Hash::check($request->password, $manager->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        // Create a new token for the manager
+        // $token = $manager->createToken()->plainTextToken;
+
+        // Return the token along with manager details
+        return response()->json([
+            'message' => 'Logged in successfully',
+            'manager' => $manager,
+            // 'token' => $token
+        ], 200);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Handle manager logout and revoke token.
      */
-    public function create()
+    public function logout(Request $request)
     {
-        //
-    }
+        // Revoke the token that was used to authenticate the current request
+        $request->user()->currentAccessToken()->delete();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Manager $manager)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Manager $manager)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Manager $manager)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Manager $manager)
-    {
-        //
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 }
