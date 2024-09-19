@@ -55,7 +55,7 @@ class ArticleCategoryController extends Controller
         $articleCategory = ArticleCategory::find($id);
 
         if (!$articleCategory) {
-            return response()->json(['message' => 'Article Category not found'], 404);
+            return response()->json(['message' => 'Article Category not found'], 422);
         }
 
         $articleCategory->name = $request->name ?? $articleCategory->name;
