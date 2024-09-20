@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,12 @@ Route::prefix('articles')->group(function () {
     Route::get('/{id}', [ArticleController::class, 'show']);
     Route::delete('/{id}', [ArticleController::class, 'destroy']);
     Route::put('/{id}', [ArticleController::class, 'update']);
+});
+
+Route::prefix('events')->group(function () {
+    Route::get('/', [EventController::class, 'index']);
+    Route::post('/', [EventController::class, 'store']);
+    Route::get('/{id}', [EventController::class, 'show']);
+    Route::delete('/{id}', [EventController::class, 'destroy']);
+    Route::put('/{id}', [EventController::class, 'update']);
 });

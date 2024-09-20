@@ -15,4 +15,9 @@ class Manager extends Model
     {
         return $this->hasMany(Article::class);
     }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
 }
