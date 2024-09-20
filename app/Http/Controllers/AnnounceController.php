@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announce;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AnnounceController extends Controller
 {
@@ -12,15 +13,8 @@ class AnnounceController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $announces = Announce::all()->where('status', 'equal', 'pending');
+        return response()->json($announces);
     }
 
     /**
@@ -28,31 +22,36 @@ class AnnounceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $announce = Announce::create($request->only(['title', 'description', 'location']));
+
+        foreach ($request->file('image') as $image) {
+            $announce->images()->create([
+                'image' => $image->store('images/announces')
+            ]);
+        }
+
+        return response()->json($announce);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Announce $announceRequest)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Announce $announceRequest)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Announce $announceRequest)
     {
-        //
+        $announceRequest->update($request->only(['title', 'description', 'location']));
+
+        return response()->json($announceRequest);
     }
 
     /**
@@ -60,6 +59,7 @@ class AnnounceController extends Controller
      */
     public function destroy(Announce $announceRequest)
     {
-        //
+        $announceRequest->delete();
+        return response()->json($announceRequest);
     }
 }
