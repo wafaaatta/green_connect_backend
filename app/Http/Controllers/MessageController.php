@@ -4,23 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getConversationMessages(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $messages = Message::where('conversation_id', $request->conversation_id)->get();
+        return response()->json($messages);
     }
 
     /**
@@ -28,23 +22,20 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|string|max:255',
+            'sender_id' => 'required|integer|exists:users,id',
+            'receiver_id' => 'required|integer|exists:users,id',
+            'conversation_id' => 'required|integer|exists:conversations,id',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Message $message)
-    {
-        //
-    }
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Message $message)
-    {
-        //
+        $message = Message::create($request->all());
+
+        return response()->json($message);
     }
 
     /**
@@ -52,7 +43,17 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $message->update($request->all());
+
+        return response()->json($message);
     }
 
     /**
@@ -60,6 +61,7 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        //
+        $message->delete();
+        return response()->json($message);
     }
 }

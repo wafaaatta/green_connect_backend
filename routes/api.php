@@ -6,6 +6,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,4 +60,15 @@ Route::prefix('conversations')->group(function () {
     Route::get('/{id}', [ConversationController::class, 'show']);
     Route::delete('/{id}', [ConversationController::class, 'destroy']);
     Route::put('/{id}', [ConversationController::class, 'update']);
+
+    Route::get('/{id}/messages', [MessageController::class, 'getConversationMessages']);
+
 });
+
+
+Route::prefix('messages')->group(function () {
+    Route::post('/', [MessageController::class, 'store']);
+    Route::delete('/{id}', [MessageController::class, 'destroy']);
+    Route::put('/{id}', [MessageController::class, 'update']);
+});
+
