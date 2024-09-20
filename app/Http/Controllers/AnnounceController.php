@@ -17,6 +17,22 @@ class AnnounceController extends Controller
         return response()->json($announces);
     }
 
+    public function acceptAnnounce($id)
+    {
+        $announce = Announce::find($id);
+        $announce->status = 'accepted';
+        $announce->save();
+        return response()->json($announce);
+    }
+
+    public function declineAnnounce($id)
+    {
+        $announce = Announce::find($id);
+        $announce->status = 'declined';
+        $announce->save();
+        return response()->json($announce);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

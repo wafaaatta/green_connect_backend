@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnounceController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventController;
@@ -38,4 +39,15 @@ Route::prefix('events')->group(function () {
     Route::get('/{id}', [EventController::class, 'show']);
     Route::delete('/{id}', [EventController::class, 'destroy']);
     Route::put('/{id}', [EventController::class, 'update']);
+});
+
+Route::prefix('announces')->group(function () {
+    Route::get('/', [AnnounceController::class, 'index']);
+    Route::post('/', [AnnounceController::class, 'store']);
+    Route::get('/{id}', [AnnounceController::class, 'show']);
+    Route::delete('/{id}', [AnnounceController::class, 'destroy']);
+    Route::put('/{id}', [AnnounceController::class, 'update']);
+
+    Route::post('/{id}/accept', [AnnounceController::class, 'acceptAnnounce']);
+    Route::post('/{id}/decline', [AnnounceController::class, 'declineAnnounce']);
 });
