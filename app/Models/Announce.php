@@ -15,4 +15,9 @@ class Announce extends Model
         'location',
         'status'
     ];
+
+    public function images()
+    {
+        return $this->hasMany(AnnounceImage::class);
+    }
 }
