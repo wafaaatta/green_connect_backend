@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnounceController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
 use Illuminate\Http\Request;
@@ -50,4 +51,12 @@ Route::prefix('announces')->group(function () {
 
     Route::post('/{id}/accept', [AnnounceController::class, 'acceptAnnounce']);
     Route::post('/{id}/decline', [AnnounceController::class, 'declineAnnounce']);
+});
+
+Route::prefix('conversations')->group(function () {
+    Route::get('/', [ConversationController::class, 'index']);
+    Route::post('/', [ConversationController::class, 'store']);
+    Route::get('/{id}', [ConversationController::class, 'show']);
+    Route::delete('/{id}', [ConversationController::class, 'destroy']);
+    Route::put('/{id}', [ConversationController::class, 'update']);
 });
