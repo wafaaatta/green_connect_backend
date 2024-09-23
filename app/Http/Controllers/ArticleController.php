@@ -39,7 +39,7 @@ class ArticleController extends Controller
         $imageName = $article->id . '.' . $image->extension();
         $image->move(public_path('images/articles'), $imageName);
 
-        $article->image = $imageName;
+        $article->image = 'images/articles/' . $imageName;
         $article->save();
 
         return response()->json($article);

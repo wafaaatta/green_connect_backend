@@ -23,4 +23,5 @@ class Event extends Model
     {
         return $this->belongsTo(Manager::class);
     }
+    
 }

@@ -13,7 +13,7 @@ class AnnounceController extends Controller
      */
     public function index()
     {
-        $announces = Announce::all()->where('status', 'equal', 'pending');
+        $announces = Announce::all();
         return response()->json($announces);
     }
 
