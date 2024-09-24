@@ -15,8 +15,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('announce_id');
             $table->foreign('announce_id')->references('id')->on('announces')->onDelete('cascade');
-            $table->string('name');
-            $table->string('creator');
+            $table->unsignedBigInteger('creator_id');
+            $table->foreign('creator_id')->references('id')->on('users');
+            $table->unsignedBigInteger('receiver_id');
+            $table->foreign('receiver_id')->references('id')->on('users');
+        
+            $table->boolean('is_read')->default(false);
+            $table->string(('last_message'))->nullable();
+            $table->string('last_sent_at')->nullable();
+            $table->string('last_sender_id')->nullable();
             $table->timestamps();
         });
     }
