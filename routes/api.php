@@ -80,5 +80,7 @@ Route::prefix('users')->group(function () {
 
     Route::post('/login', [UserController::class, 'loginUser']);
 
-    Route::get('/{id}/announces', [AnnounceController::class, 'getUserAnnounces']);
 });
+
+Route::get('/creators/{id}/conversations', [ConversationController::class, 'getConversationsByCreatorId']);
+Route::get('/receivers/{id}/conversations', [ConversationController::class, 'getConversationsByReceiverId']);

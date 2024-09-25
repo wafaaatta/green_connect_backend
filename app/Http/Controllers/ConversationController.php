@@ -24,9 +24,15 @@ class ConversationController extends Controller
         return response()->json($conversations);
     }
 
-    public function getConversationsByParticipant($id)
+    public function getConversationsByCreatorId($id)
     {
-        $conversations = Conversation::where('participant_id', $id)->get();
+        $conversations = Conversation::where('creator_id', $id)->get();
+        return response()->json($conversations);
+    }
+
+    public function getConversationsByReceiverId($id)
+    {
+        $conversations = Conversation::where('receiver_id', $id)->get();
         return response()->json($conversations);
     }
 
@@ -110,9 +116,13 @@ class ConversationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Conversation $conversation)
+    public function destroy(Request $request, $id)
     {
+        Message::where('conversation_id', $id)->delete();
+
+        $conversation = Conversation::find($id);
         $conversation->delete();
-        return response()->json($conversation);
+
+        return response()->json('Conversation deleted successfully');
     }
 }

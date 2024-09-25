@@ -61,9 +61,11 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Message $message)
+    public function destroy(Request $request, $id)
     {
+        $message = Message::find($id);
         $message->delete();
-        return response()->json($message);
+
+        return response()->json('Message deleted successfully');
     }
 }
