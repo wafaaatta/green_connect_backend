@@ -13,7 +13,7 @@ class AnnounceController extends Controller
      */
     public function index()
     {
-        $announces = Announce::where('status', 'pending')->get();
+        $announces = Announce::where('status', 'pending')->with('user')->get();
         return response()->json($announces);
     }
 

@@ -28,7 +28,7 @@ Route::prefix('managers')->group(function () {
     Route::post('/login', [ManagerController::class, 'login']);
 });
 
-Route::prefix('articles')->middleware('auth:sanctum')->group(function () {
+Route::prefix('articles')->group(function () {
     Route::get('/', [ArticleController::class, 'index']);     // List all articles
     Route::post('/', [ArticleController::class, 'store']);    // Create a new article
     Route::get('/{id}', [ArticleController::class, 'show']);  // Show a specific article
