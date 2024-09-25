@@ -6,14 +6,16 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
 class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function getConversationMessages(Request $request)
+    public function getConversationMessages(Request $request, $id)
     {
-        $messages = Message::where('conversation_id', $request->conversation_id)->get();
+
+        $messages = Message::where('conversation_id', $id)->get();
         return response()->json($messages);
     }
 
@@ -25,7 +27,7 @@ class MessageController extends Controller
         $validator = Validator::make($request->all(), [
             'content' => 'required|string|max:255',
             'sender_id' => 'required|integer|exists:users,id',
-            'receiver_id' => 'required|integer|exists:users,id',
+            // 'receiver_id' => 'required|integer|exists:users,id',
             'conversation_id' => 'required|integer|exists:conversations,id',
         ]);
 

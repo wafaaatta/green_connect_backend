@@ -9,7 +9,13 @@ class Conversation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'creator', 'announce_id'];
+    protected $fillable = ['creator_id', 'receiver_id', 'announce_id'];
+
+    protected $casts = [
+        "receiver_id" => "integer",
+        "creator_id" => "integer",
+        "announce_id" => "integer",
+    ];
 
     public function messages()
     {

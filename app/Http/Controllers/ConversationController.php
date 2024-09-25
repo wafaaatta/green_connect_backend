@@ -14,7 +14,7 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        $conversations = Conversation::with('messages') -> all();
+        $conversations = Conversation::all();
         return response()->json($conversations);
     }
 
@@ -51,24 +51,24 @@ class ConversationController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $conversation = Conversation::where('creator', $request->creator_id)
-            ->where('receiver', $request->receiver_id)
+        $conversation = Conversation::where('creator_id', $request->creator_id)
+            ->where('receiver_id', $request->receiver_id)
             ->where('announce_id', $request->announce_id)
-            ->first();
-        
-        if ($conversation) {
+            ->get();
+
+        if ($conversation -> count() > 0) {
             return response()->json([
                 'message' => 'Conversation already exists',
             ], 422);
-        } 
+        }
 
-        $conversation = Conversation::create([
-            'name' => $request->name,
-            'creator' => $request->creator,
+        $new_conversation = Conversation::create([
+            'creator_id' => $request->creator_id,
+            'receiver_id' => $request->receiver_id,
             'announce_id' => $request->announce_id,
         ]);
 
-        return response()->json($conversation);
+        return response()->json($new_conversation);
     }
 
     function createMessage(Request $request, $id)

@@ -79,4 +79,6 @@ Route::prefix('users')->group(function () {
     Route::get('/{id}', [UserController::class, 'show']);
 
     Route::post('/login', [UserController::class, 'loginUser']);
+
+    Route::get('/{id}/announces', [AnnounceController::class, 'getUserAnnounces']);
 });
