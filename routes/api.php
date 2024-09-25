@@ -28,12 +28,12 @@ Route::prefix('managers')->group(function () {
     Route::post('/login', [ManagerController::class, 'login']);
 });
 
-Route::prefix('articles')->group(function () {
-    Route::get('/', [ArticleController::class, 'index']);
-    Route::post('/', [ArticleController::class, 'store']);
-    Route::get('/{id}', [ArticleController::class, 'show']);
-    Route::delete('/{id}', [ArticleController::class, 'destroy']);
-    Route::put('/{id}', [ArticleController::class, 'update']);
+Route::prefix('articles')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ArticleController::class, 'index']);     // List all articles
+    Route::post('/', [ArticleController::class, 'store']);    // Create a new article
+    Route::get('/{id}', [ArticleController::class, 'show']);  // Show a specific article
+    Route::put('/{id}', [ArticleController::class, 'update']); // Update a specific article
+    Route::delete('/{id}', [ArticleController::class, 'destroy']); // Delete a specific article
 });
 
 Route::prefix('events')->group(function () {
@@ -73,4 +73,10 @@ Route::prefix('messages')->group(function () {
     Route::put('/{id}', [MessageController::class, 'update']);
 });
 
-Route::get('/users', [UserController::class,'index']);
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index']);
+    Route::post('/', [UserController::class, 'store']);
+    Route::get('/{id}', [UserController::class, 'show']);
+
+    Route::post('/login', [UserController::class, 'loginUser']);
+});

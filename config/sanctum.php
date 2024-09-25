@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Manager;
 use Laravel\Sanctum\Sanctum;
 
 return [

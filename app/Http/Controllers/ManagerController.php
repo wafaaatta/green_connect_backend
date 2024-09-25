@@ -40,21 +40,23 @@ class ManagerController extends Controller
         ]);
 
         // Find the manager by email
-        $manager = Manager::where('email', $request->email)->first();
 
         // Check if the manager exists and if the password is correct
-        if (!$manager || !Hash::check($request->password, $manager->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+        if (!Auth::guard('manager')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => 401
+            ], 401);
         }
 
-        // Create a new token for the manager
-        // $token = $manager->createToken()->plainTextToken;
+        
+        $manager = Auth::guard('manager')->user();
+        $token = $manager->createToken('auth_token')->plainTextToken;
 
-        // Return the token along with manager details
         return response()->json([
             'message' => 'Logged in successfully',
-            'manager' => $manager,
-            // 'token' => $token
+            'token' => $manager->createToken('auth_token')->plainTextToken,
+            'manager' => $manager
         ], 200);
     }
 
