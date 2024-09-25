@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ArticleCategory;
 use Database\Factories\ArticleCategoryFactory;
 use Database\Factories\ArticleFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,8 +15,11 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
-        ArticleCategoryFactory::new()->count(10)->create()->each(function ($category) {
-            ArticleFactory::new()->count(4)->create(['article_category_id' => $category->id]);
+        ArticleCategory::all()->each(function ($articleCategory) {
+            ArticleFactory::new()->count(6)->create([
+                'article_category_id' => $articleCategory->id,
+                'manager_id' => 1
+            ]);
         });
     }
 }

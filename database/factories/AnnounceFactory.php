@@ -20,7 +20,8 @@ class AnnounceFactory extends Factory
             "title"=> $this->faker->word,
             "description"=> $this->faker->word,
             "location"=> $this->faker->word,
-            "status"=> $this->faker->randomElement(['pending', 'accepted', 'rejected'])
+            "status"=> $this->faker->randomElement(['pending', 'accepted', 'rejected']),
+            "image"=> $this->faker->imageUrl,
         ];
     }
 }

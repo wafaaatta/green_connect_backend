@@ -13,10 +13,13 @@ class ManagerSeeder extends Seeder
      */
     public function run(): void
     {
-        ManagerFactory::new() -> create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        if (!\App\Models\Manager::query()->where('id', 1)->exists()) {
+            ManagerFactory::new() -> create([
+                'id' => 1,
+                'name' => 'admin',
+                'email' => 'admin@admin.com',
+                'password' => bcrypt('12345678'),
+            ]);
+        }
     }
 }

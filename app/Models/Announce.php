@@ -16,8 +16,8 @@ class Announce extends Model
         'status'
     ];
 
-    public function images()
+    public function user()
     {
-        return $this->hasMany(AnnounceImage::class);
+        return $this->belongsTo(User::class);
     }
 }
