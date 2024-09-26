@@ -44,7 +44,7 @@ Route::prefix('events')->group(function () {
     Route::put('/{id}', [EventController::class, 'update']);
 });
 
-Route::prefix('announces')->group(function () {
+Route::prefix('announces')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [AnnounceController::class, 'index']);
     Route::post('/', [AnnounceController::class, 'store']);
     Route::get('/{id}', [AnnounceController::class, 'show']);

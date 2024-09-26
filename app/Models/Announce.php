@@ -13,7 +13,9 @@ class Announce extends Model
         'title',
         'description',
         'location',
-        'status'
+        'status',
+        'image',
+        'user_id'
     ];
 
     public function user()

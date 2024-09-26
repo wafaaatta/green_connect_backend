@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announce;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AnnounceController extends Controller
@@ -48,19 +49,27 @@ class AnnounceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $announce = Announce::create($request->only(['title', 'description', 'location']));
+        $user = $request->user();
 
-        foreach ($request->file('image') as $image) {
-            $announce->images()->create([
-                'image' => $image->store('images/announces')
-            ]);
-        }
+        $image = $request->file('image');
+        $imageName = time() . '.' . $image->extension();
+        $image->move(public_path('images/announces'), $imageName);
+
+        $announce = Announce::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'location' => $request->location,
+            'user_id' => $user->id,
+            'image' => 'images/announces/' . $imageName,
+            'status' => 'pending',
+        ]);
 
         return response()->json($announce);
     }
