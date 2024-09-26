@@ -18,9 +18,10 @@ class AnnounceController extends Controller
         return response()->json($announces);
     }
 
-    public function getUserAnnounces($id)
+    public function getUserAnnounces(Request $request)
     {
-        $announces = Announce::where('user_id', $id)->get();
+        $user = $request->user();
+        $announces = Announce::where('user_id', $user->id)->get();
         return response()->json($announces);
     }
 

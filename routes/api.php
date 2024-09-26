@@ -80,7 +80,9 @@ Route::prefix('users')->group(function () {
 
     Route::post('/login', [UserController::class, 'loginUser']);
 
+    
 });
+Route::get('/user/announces', [AnnounceController::class, 'getUserAnnounces'])->middleware('auth:sanctum');
 
 Route::get('/creators/{id}/conversations', [ConversationController::class, 'getConversationsByCreatorId']);
 Route::get('/receivers/{id}/conversations', [ConversationController::class, 'getConversationsByReceiverId']);
