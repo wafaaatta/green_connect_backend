@@ -56,7 +56,7 @@ Route::prefix('announces')->middleware('auth:sanctum')->group(function () {
     Route::post('/{id}/decline', [AnnounceController::class, 'declineAnnounce']);
 });
 
-Route::prefix('conversations')->group(function () {
+Route::prefix('conversations')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [ConversationController::class, 'index']);
     Route::post('/', [ConversationController::class, 'store']);
     Route::get('/{id}', [ConversationController::class, 'show']);

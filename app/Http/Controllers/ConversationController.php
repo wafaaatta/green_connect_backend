@@ -49,8 +49,7 @@ class ConversationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'creator_id' => 'required|string|max:255',
-            'receiver_id' => 'required|string|max:255',
+            'receiver_id' => 'required|integer|max:255',
             'announce_id' => 'required|integer|exists:announces,id',
         ]);
 
@@ -58,7 +57,9 @@ class ConversationController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $conversation = Conversation::where('creator_id', $request->creator_id)
+        $user = $request->user();
+
+        $conversation = Conversation::where('creator_id', $user->id)
             ->where('receiver_id', $request->receiver_id)
             ->where('announce_id', $request->announce_id)
             ->get();
@@ -70,7 +71,7 @@ class ConversationController extends Controller
         }
 
         $new_conversation = Conversation::create([
-            'creator_id' => $request->creator_id,
+            'creator_id' => $user->id,
             'receiver_id' => $request->receiver_id,
             'announce_id' => $request->announce_id,
         ]);
