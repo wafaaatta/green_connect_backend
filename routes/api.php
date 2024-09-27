@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ArticleCreated;
 use App\Http\Controllers\AnnounceController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
@@ -80,9 +81,16 @@ Route::prefix('users')->group(function () {
 
     Route::post('/login', [UserController::class, 'loginUser']);
 
-    
+
 });
 Route::get('/user/announces', [AnnounceController::class, 'getUserAnnounces'])->middleware('auth:sanctum');
 
 Route::get('/creators/{id}/conversations', [ConversationController::class, 'getConversationsByCreatorId']);
 Route::get('/receivers/{id}/conversations', [ConversationController::class, 'getConversationsByReceiverId']);
+
+
+Route::get('/pusher/test', function () {
+    event(new ArticleCreated('hello world'));
+
+    return 'done';
+});
