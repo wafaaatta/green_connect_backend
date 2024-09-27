@@ -31,7 +31,7 @@ class ArticleCreated implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return ['my-channel'];
+        return ['green-connect-channel'];
     }
 
     public function broadcastAs()

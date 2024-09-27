@@ -6,6 +6,7 @@ use App\Events\ConversationCreated;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ConversationController extends Controller
@@ -25,15 +26,11 @@ class ConversationController extends Controller
         return response()->json($conversations);
     }
 
-    public function getConversationsByCreatorId($id)
+    public function getConversationsByUserId(Request $request)
     {
-        $conversations = Conversation::where('creator_id', $id)->get();
-        return response()->json($conversations);
-    }
-
-    public function getConversationsByReceiverId($id)
-    {
-        $conversations = Conversation::where('receiver_id', $id)->get();
+        $user = $request->user();
+        $id = $user->id;
+        $conversations = Conversation::where('receiver_id', $id)->orWhere('creator_id', $id)->get();
         return response()->json($conversations);
     }
 

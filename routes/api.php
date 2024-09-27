@@ -1,14 +1,17 @@
 <?php
 
 use App\Events\ArticleCreated;
+use App\Events\ConversationCreated;
 use App\Http\Controllers\AnnounceController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
+use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -68,7 +71,7 @@ Route::prefix('conversations')->middleware('auth:sanctum')->group(function () {
 });
 
 
-Route::prefix('messages')->group(function () {
+Route::prefix('messages')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [MessageController::class, 'store']);
     Route::delete('/{id}', [MessageController::class, 'destroy']);
     Route::put('/{id}', [MessageController::class, 'update']);
@@ -84,13 +87,15 @@ Route::prefix('users')->group(function () {
 
 });
 Route::get('/user/announces', [AnnounceController::class, 'getUserAnnounces'])->middleware('auth:sanctum');
-
-Route::get('/creators/{id}/conversations', [ConversationController::class, 'getConversationsByCreatorId']);
-Route::get('/receivers/{id}/conversations', [ConversationController::class, 'getConversationsByReceiverId']);
+Route::get('/user/conversations', [ConversationController::class, 'getConversationsByUserId'])->middleware('auth:sanctum');
 
 
 Route::get('/pusher/test', function () {
-    event(new ArticleCreated('hello world'));
+    event(new ConversationCreated(
+        Conversation::first()
+    ));
 
     return 'done';
 });
+
+Route::middleware('auth:sanctum')->get('/validate-token', [AuthController::class, 'validateToken']);

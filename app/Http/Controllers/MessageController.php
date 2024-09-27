@@ -27,8 +27,6 @@ class MessageController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string|max:255',
-            'sender_id' => 'required|integer|exists:users,id',
-            // 'receiver_id' => 'required|integer|exists:users,id',
             'conversation_id' => 'required|integer|exists:conversations,id',
         ]);
 
@@ -36,7 +34,13 @@ class MessageController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $message = Message::create($request->all());
+        $user = $request->user();
+
+        $message = Message::create([
+            'content' => $request['content'],
+            'sender_id' => $user->id,
+            'conversation_id' => $request->conversation_id
+        ]);
 
         event(new MessageCreated($message));
 

@@ -24,7 +24,7 @@ class MessageCreated
 
     public function broadcastOn()
     {
-        return new Channel('messages');
+        return new Channel('green-connect-channel');
     }
 
     public function broadcastAs()

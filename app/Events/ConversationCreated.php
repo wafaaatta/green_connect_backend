@@ -8,10 +8,11 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ConversationCreated implements ShouldBroadcast
+class ConversationCreated implements ShouldBroadcastNow
 {
     use Dispatchable ,InteractsWithSockets, SerializesModels;
 
@@ -24,7 +25,7 @@ class ConversationCreated implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('conversations');
+        return new Channel('conversations-channel');
     }
 
     public function broadcastAs()
