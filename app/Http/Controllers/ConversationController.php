@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ConversationCreated;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -73,6 +74,8 @@ class ConversationController extends Controller
             'receiver_id' => $request->receiver_id,
             'announce_id' => $request->announce_id,
         ]);
+
+        event(new ConversationCreated($new_conversation));
 
         return response()->json($new_conversation);
     }

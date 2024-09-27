@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageCreated;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -36,6 +37,8 @@ class MessageController extends Controller
         }
 
         $message = Message::create($request->all());
+
+        event(new MessageCreated($message));
 
         return response()->json($message);
     }
