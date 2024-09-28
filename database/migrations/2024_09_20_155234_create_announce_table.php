@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('location');
+            $table->text('postal_code');
+            $table->text('country');
+            $table->text('city');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->string('image');
 

@@ -14,7 +14,18 @@ class AnnounceController extends Controller
      */
     public function index()
     {
-        $announces = Announce::where('status', 'pending')->with('user')->get();
+        $announces = Announce::whereNotIn('status', ['rejected'])
+            ->orderByRaw('FIELD(status, "pending", "accepted")')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($announces);
+    }
+
+    public function getAcceptedAnnounces(Request $request)
+    {
+        $announces = Announce::where('status', 'accepted')
+            ->with('user')
+            ->get();
         return response()->json($announces);
     }
 
@@ -25,7 +36,7 @@ class AnnounceController extends Controller
         return response()->json($announces);
     }
 
-    public function acceptAnnounce($id)
+    public function acceptAnnounce(Request $request, $id)
     {
         $announce = Announce::find($id);
         $announce->status = 'accepted';
@@ -33,10 +44,10 @@ class AnnounceController extends Controller
         return response()->json($announce);
     }
 
-    public function declineAnnounce($id)
+    public function declineAnnounce(Request $request, $id)
     {
         $announce = Announce::find($id);
-        $announce->status = 'declined';
+        $announce->status = 'rejected';
         $announce->save();
         return response()->json($announce);
     }
@@ -49,7 +60,9 @@ class AnnounceController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'location' => 'required|string',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -66,7 +79,9 @@ class AnnounceController extends Controller
         $announce = Announce::create([
             'title' => $request->title,
             'description' => $request->description,
-            'location' => $request->location,
+            'country' => $request->country,
+            'city' => $request->city,
+            'postal_code' => $request->postal_code,
             'user_id' => $user->id,
             'image' => 'images/announces/' . $imageName,
             'status' => 'pending',

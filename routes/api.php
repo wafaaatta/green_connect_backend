@@ -29,8 +29,11 @@ Route::prefix('article-categories')->group(function () {
 });
 
 Route::prefix('managers')->group(function () {
+    Route::get('/', [ManagerController::class, 'index']);
     Route::post('/', [ManagerController::class, 'store']);
     Route::post('/login', [ManagerController::class, 'login']);
+    Route::put('/{id}', [ManagerController::class, 'update']);
+    Route::delete('/{id}', [ManagerController::class, 'destroy']);
 });
 
 Route::prefix('articles')->group(function () {
@@ -51,13 +54,14 @@ Route::prefix('events')->group(function () {
 
 Route::prefix('announces')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [AnnounceController::class, 'index']);
+    Route::get('/accepted', [AnnounceController::class, 'getAcceptedAnnounces']);
     Route::post('/', [AnnounceController::class, 'store']);
     Route::get('/{id}', [AnnounceController::class, 'show']);
     Route::delete('/{id}', [AnnounceController::class, 'destroy']);
     Route::put('/{id}', [AnnounceController::class, 'update']);
 
     Route::post('/{id}/accept', [AnnounceController::class, 'acceptAnnounce']);
-    Route::post('/{id}/decline', [AnnounceController::class, 'declineAnnounce']);
+    Route::post('/{id}/reject', [AnnounceController::class, 'declineAnnounce']);
 });
 
 Route::prefix('conversations')->middleware('auth:sanctum')->group(function () {

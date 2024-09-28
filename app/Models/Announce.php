@@ -12,7 +12,9 @@ class Announce extends Model
     protected $fillable = [
         'title',
         'description',
-        'location',
+        'country',
+        'city',
+        'postal_code',
         'status',
         'image',
         'user_id'

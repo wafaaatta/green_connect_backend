@@ -10,12 +10,16 @@ use Illuminate\Support\Facades\Validator;
 
 class ManagerController extends Controller
 {
+    public function index()
+    {
+        $managers = Manager::all();
+        return response()->json($managers);
+    }
     public function store(Request $request){
         $validation = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:managers',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,supervisor'
         ]);
         if ($validation->fails()) {
             return response()->json($validation->errors(), 400);
@@ -24,7 +28,7 @@ class ManagerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => 'admin'
         ]);
         return response()->json($manager);
     }
@@ -69,5 +73,19 @@ class ManagerController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully'], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $manager = Manager::find($id);
+        $manager->update($request->all());
+        return response()->json($manager);
+    }
+
+    public function destroy($id)
+    {
+        $manager = Manager::find($id);
+        $manager->delete();
+        return response()->json('Manager deleted successfully');
     }
 }
