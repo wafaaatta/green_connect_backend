@@ -54,26 +54,13 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $article = Article::find($id);
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'article_category_id' => 'required|integer|exists:article_categories,id',
-            'manager_id' => 'required|integer|exists:managers,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         $article->update($request->all());
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $article->id . '.' . $image->extension();
             $image->move(public_path('images/articles'), $imageName);
-            $article->image = $imageName;
+            $article->image = 'images/articles/' . $imageName;
         }
 
         $article->save();
