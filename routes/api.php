@@ -52,9 +52,11 @@ Route::prefix('events')->group(function () {
     Route::put('/{id}', [EventController::class, 'update']);
 });
 
+Route::get('announces/accepted', [AnnounceController::class, 'getAcceptedAnnounces']);
+
+
 Route::prefix('announces')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [AnnounceController::class, 'index']);
-    Route::get('/accepted', [AnnounceController::class, 'getAcceptedAnnounces']);
     Route::post('/', [AnnounceController::class, 'store']);
     Route::get('/{id}', [AnnounceController::class, 'show']);
     Route::delete('/{id}', [AnnounceController::class, 'destroy']);
@@ -88,6 +90,8 @@ Route::prefix('users')->group(function () {
     Route::get('/{id}', [UserController::class, 'show']);
 
     Route::post('/login', [UserController::class, 'loginUser']);
+
+    Route::put('/{id}', [UserController::class, 'update']);
 
 
 });

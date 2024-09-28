@@ -8,9 +8,18 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with('articleCategory', 'manager')->orderBy('created_at', 'desc')->get();
+        $size = $request->query('size');
+
+        $query = Article::with('articleCategory', 'manager')->orderBy('created_at', 'desc');
+
+        if ($size || $size == 0) {
+            $query->limit($size);
+        }
+
+        $articles = $query->get();
+
         return response()->json($articles);
     }
 

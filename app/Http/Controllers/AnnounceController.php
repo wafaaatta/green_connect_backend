@@ -23,16 +23,24 @@ class AnnounceController extends Controller
 
     public function getAcceptedAnnounces(Request $request)
     {
-        $announces = Announce::where('status', 'accepted')
-            ->with('user')
-            ->get();
+        $size = $request->query('size');
+        $query = Announce::where('status', 'accepted')
+            ->with('user');
+
+        if ($size || $size == 0) {
+            $query->limit($size);
+        }
+
+        $announces = $query->get();
         return response()->json($announces);
     }
 
     public function getUserAnnounces(Request $request)
     {
         $user = $request->user();
-        $announces = Announce::where('user_id', $user->id)->get();
+        $announces = Announce::where('user_id', $user->id)
+            ->with('user')
+            ->get();
         return response()->json($announces);
     }
 
@@ -40,6 +48,7 @@ class AnnounceController extends Controller
     {
         $announce = Announce::find($id);
         $announce->status = 'accepted';
+        $announce->request_type = null;
         $announce->save();
         return response()->json($announce);
     }
@@ -48,6 +57,7 @@ class AnnounceController extends Controller
     {
         $announce = Announce::find($id);
         $announce->status = 'rejected';
+        $announce->request_type = null;
         $announce->save();
         return response()->json($announce);
     }
@@ -85,6 +95,7 @@ class AnnounceController extends Controller
             'user_id' => $user->id,
             'image' => 'images/announces/' . $imageName,
             'status' => 'pending',
+            'request_type' => 'creation'
         ]);
 
         return response()->json($announce);
@@ -94,19 +105,37 @@ class AnnounceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Announce $announceRequest)
+    public function update(Request $request, $id)
     {
-        $announceRequest->update($request->only(['title', 'description', 'location']));
+        $announce = Announce::find($id);
 
-        return response()->json($announceRequest);
+        $announce->title = $request->title;
+        $announce->description = $request->description;
+        $announce->country = $request->country;
+        $announce->city = $request->city;
+        $announce->postal_code = $request->postal_code;
+        $announce->request_type = 'modification';
+        $announce->status = 'pending';
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $announce->id . '.' . $image->extension();
+            $image->move(public_path('images/announces'), $imageName);
+            $announce->image = 'images/announces/' . $imageName;
+        }
+
+        $announce->save();
+
+        return response()->json($announce);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Announce $announceRequest)
+    public function destroy(Request $request, $id)
     {
-        $announceRequest->delete();
-        return response()->json($announceRequest);
+        $announce = Announce::find($id);
+        $announce->delete();
+        return response()->json('Announce deleted successfully');
     }
 }

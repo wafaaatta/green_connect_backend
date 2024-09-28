@@ -17,7 +17,8 @@ class Announce extends Model
         'postal_code',
         'status',
         'image',
-        'user_id'
+        'user_id',
+        'category'
     ];
 
     public function user()

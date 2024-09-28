@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('manager')->orderBy('created_at', 'desc')->get();
+        $size = $request->query('size');
+        $query = Event::with('manager')->orderBy('created_at', 'desc');
+        if ($size || $size == 0) {
+            $query->limit($size);
+        }
+        $events = $query->get();
         return response()->json($events);
     }
 

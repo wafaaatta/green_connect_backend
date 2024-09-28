@@ -19,7 +19,10 @@ class AnnounceFactory extends Factory
         return [
             "title"=> $this->faker->word,
             "description"=> $this->faker->word,
-            "location"=> $this->faker->word,
+            'country' => $this->faker->country,
+            'city' => $this->faker->city,
+            'postal_code' => $this->faker->postcode,
+            'category' => $this->faker->word,
             "status"=> $this->faker->randomElement(['pending', 'accepted', 'rejected']),
             "image"=> $this->faker->imageUrl,
         ];
