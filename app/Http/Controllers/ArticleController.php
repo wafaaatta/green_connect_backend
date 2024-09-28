@@ -42,7 +42,7 @@ class ArticleController extends Controller
         $article->image = 'images/articles/' . $imageName;
         $article->save();
 
-        return response()->json($article);
+        return response()->json($article->load('articleCategory'));
     }
 
     public function show($id)
@@ -65,7 +65,7 @@ class ArticleController extends Controller
 
         $article->save();
 
-        return response()->json($article);
+        return response()->json($article->load('articleCategory'));
     }
 
     public function destroy($id)
