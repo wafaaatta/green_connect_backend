@@ -13,7 +13,7 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $articleCategories = ArticleCategory::all();
+        $articleCategories = ArticleCategory::orderBy('created_at', 'desc')->get();
         return response()->json($articleCategories);
     }
 
@@ -70,6 +70,7 @@ class ArticleCategoryController extends Controller
     public function destroy(Request $request, $id)
     {
         $articleCategory = ArticleCategory::find($id);
+        $articleCategory->articles()->delete();
         $articleCategory->delete();
 
         return response()->json($articleCategory);
