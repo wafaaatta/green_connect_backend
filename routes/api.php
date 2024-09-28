@@ -6,14 +6,17 @@ use App\Http\Controllers\AnnounceController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
+use App\Mail\ContactReply;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -92,8 +95,11 @@ Route::prefix('users')->group(function () {
     Route::post('/login', [UserController::class, 'loginUser']);
 
     Route::put('/{id}', [UserController::class, 'update']);
+});
 
-
+Route::prefix('contact-submissions')->group(function () {
+    Route::get('/', [ContactSubmissionController::class, 'index']);
+    Route::post('/', [ContactSubmissionController::class, 'store']);
 });
 Route::get('/user/announces', [AnnounceController::class, 'getUserAnnounces'])->middleware('auth:sanctum');
 Route::get('/user/conversations', [ConversationController::class, 'getConversationsByUserId'])->middleware('auth:sanctum');
@@ -105,6 +111,18 @@ Route::get('/pusher/test', function () {
     ));
 
     return 'done';
+});
+Route::get('/mailer/test', function () {
+    $contactName = 'John Doe';
+    $messageBody = 'This is a test message sent from the contact form.';
+
+    // Send the email
+    Mail::to('wafaaatta04@gmail.com')->send(new ContactReply($contactName, $messageBody));
+
+    // Return a response to the user (for example, a success message)
+    return response()->json([
+        'message' => 'Email sent successfully',
+    ]);
 });
 
 Route::get('/statistics', [StatisticsController::class, 'getSystemStatistics']);

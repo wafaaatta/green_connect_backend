@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             AnnounceSeeder::class,
             ArticleCategorySeeder::class,
             ArticleSeeder::class,
-            EventSeeder::class
+            EventSeeder::class,
+            ContactSubmissionSeeder::class
         ]);
         
     }
