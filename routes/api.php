@@ -10,6 +10,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
@@ -97,5 +98,7 @@ Route::get('/pusher/test', function () {
 
     return 'done';
 });
+
+Route::get('/statistics', [StatisticsController::class, 'getSystemStatistics']);
 
 Route::middleware('auth:sanctum')->get('/validate-token', [AuthController::class, 'validateToken']);
