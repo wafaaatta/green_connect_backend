@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->date('event_date');
+            $table->dateTime('event_date');
             $table->string('organized_by');
             $table->string('location');
             $table->string('image');
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+    
 
     /**
      * Reverse the migrations.

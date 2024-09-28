@@ -10,7 +10,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with('manager')->get();
+        $events = Event::with('manager')->orderBy('created_at', 'desc')->get();
         return response()->json($events);
     }
 
@@ -41,7 +41,7 @@ class EventController extends Controller
             'location' => $request->location,
             'organized_by' => $request->organized_by,
             'manager_id' => $request->manager_id,
-            'image' => $imageName
+            'image' => 'images/events/' . $imageName
         ]);
 
         return response()->json($event);
@@ -54,12 +54,34 @@ class EventController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $event = Event::find($id);
-        $event->update($request->all());
+{
+    $event = Event::find($id);
 
-        return response()->json($event);
+    if (!$event) {
+        return response()->json(['error' => 'Event not found'], 404);
     }
+
+    if ($request->hasFile('image')) {
+        try {
+            $image = $request->file('image');
+            $imageName = $event->id . '.' . $image->extension();
+
+            // Move the file to the specified path
+            $image->move(public_path('images/events'), $imageName);
+
+            // Update the event with the new image
+            $event->image = 'images/events/' . $imageName;
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to upload image: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // Update other fields
+    $event->update($request->only(['title', 'description', 'event_date', 'location', 'organized_by', 'manager_id']));
+
+    return response()->json($event);
+}
+
 
     public function destroy($id)
     {

@@ -10,7 +10,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::with('articleCategory', 'manager')->get();
+        $articles = Article::with('articleCategory', 'manager')->orderBy('created_at', 'desc')->get();
         return response()->json($articles);
     }
 
@@ -88,4 +88,3 @@ class ArticleController extends Controller
         return response()->json(['message' => 'Article deleted successfully']);
     }
 }
-
