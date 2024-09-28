@@ -33,4 +33,11 @@ class ContactSubmissionController extends Controller
 
         return response()->json($contactSubmission);
     }
+
+    public function destroy($id)
+    {
+        $contactSubmission = ContactSubmission::find($id);
+        $contactSubmission->delete();
+        return response()->json($contactSubmission);
+    }
 }

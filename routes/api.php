@@ -100,6 +100,7 @@ Route::prefix('users')->group(function () {
 Route::prefix('contact-submissions')->group(function () {
     Route::get('/', [ContactSubmissionController::class, 'index']);
     Route::post('/', [ContactSubmissionController::class, 'store']);
+    Route::delete('/{id}', [ContactSubmissionController::class, 'destroy']);
 });
 Route::get('/user/announces', [AnnounceController::class, 'getUserAnnounces'])->middleware('auth:sanctum');
 Route::get('/user/conversations', [ConversationController::class, 'getConversationsByUserId'])->middleware('auth:sanctum');

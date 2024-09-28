@@ -30,7 +30,8 @@ class ConversationController extends Controller
     {
         $user = $request->user();
         $id = $user->id;
-        $conversations = Conversation::where('receiver_id', $id)->orWhere('creator_id', $id)->get();
+        $conversations = Conversation::where('receiver_id', $id)->orWhere('creator_id', $id)
+            ->with('announce.user', 'creator', 'receiver')->get();
         return response()->json($conversations);
     }
 
