@@ -16,7 +16,9 @@ class MessageController extends Controller
     public function getConversationMessages(Request $request, $id)
     {
 
-        $messages = Message::where('conversation_id', $id)->get();
+        $messages = Message::where('conversation_id', $id)
+            ->with('reply_message')
+            ->get();
         return response()->json($messages);
     }
 
@@ -28,6 +30,7 @@ class MessageController extends Controller
         $validator = Validator::make($request->all(), [
             'content' => 'required|string|max:255',
             'conversation_id' => 'required|integer|exists:conversations,id',
+            'message_type' => 'nullable|string|in:text,image|default:text',
         ]);
 
         if ($validator->fails()) {
@@ -39,8 +42,23 @@ class MessageController extends Controller
         $message = Message::create([
             'content' => $request['content'],
             'sender_id' => $user->id,
-            'conversation_id' => $request->conversation_id
+            'conversation_id' => $request->conversation_id,
+            'message_type' => $request->message_type,
         ]);
+
+        if ($request->message_type == 'image') {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->extension();
+            $image->move(public_path('images/messages'), $imageName);
+
+            $message->image_url = 'images/messages/' . $imageName;
+        }
+
+        if ($request->reply_message_id) {
+            $message->reply_message_id = $request->reply_message_id;
+        }
+
+        $message->save();
 
         event(new MessageCreated($message));
 

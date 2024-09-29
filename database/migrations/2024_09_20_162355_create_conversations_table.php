@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('receiver_id');
             $table->foreign('receiver_id')->references('id')->on('users');
         
-            $table->boolean('is_read')->default(false);
             $table->string(('last_message'))->nullable();
             $table->string('last_sent_at')->nullable();
             $table->string('last_sender_id')->nullable();

@@ -21,4 +21,9 @@ class Message extends Model
     {
         return $this->belongsTo(Conversation::class);
     }
+
+    public function reply_message()
+    {
+        return $this->belongsTo(Message::class, 'reply_message_id');
+    }
 }
