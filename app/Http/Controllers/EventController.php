@@ -28,7 +28,8 @@ class EventController extends Controller
             'location' => 'required|string',
             'organized_by' => 'required|string',
             'manager_id' => 'required|integer|exists:managers,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'organizer_email' => 'required|email',
         ]);
 
         if ($validator->fails()) {
@@ -46,7 +47,8 @@ class EventController extends Controller
             'location' => $request->location,
             'organized_by' => $request->organized_by,
             'manager_id' => $request->manager_id,
-            'image' => 'images/events/' . $imageName
+            'image' => 'images/events/' . $imageName,
+            'organizer_email' => $request->organizer_email
         ]);
 
         return response()->json($event);

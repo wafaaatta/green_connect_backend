@@ -16,7 +16,8 @@ class AnnounceSeeder extends Seeder
     public function run(): void
     {
         User::all()->each(function ($user) {
-            AnnounceFactory::new()->count(6)->create(['user_id' => $user->id]);
+            $count = rand(1, 50);
+            AnnounceFactory::new()->count($count)->create(['user_id' => $user->id]);
         });
     }
 }

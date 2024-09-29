@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announce;
 use App\Models\Article;
+use App\Models\ContactSubmission;
 use App\Models\Event;
 use App\Models\Manager;
 use App\Models\User;
@@ -22,7 +23,8 @@ class StatisticsController extends Controller
         $totalEvents = Event::count();
         $totalManagers = Manager::count();
         $totalUsers = User::count();
-        $totalAnnounces = Announce::count();
+        $totalAnnounces = Announce::count(); 
+        $totalContactSubmissions = ContactSubmission::count();
 
         // Group users by month and count the number of users created each month
         $userGraph = User::select('id', 'created_at')
@@ -90,6 +92,7 @@ class StatisticsController extends Controller
                 'managers' => $totalManagers,
                 'users' => $totalUsers,
                 'announces' => $totalAnnounces,
+                'contact_submissions' => $totalContactSubmissions
             ],
             'userGraph' => $userGraph->map(function ($count, $month) {
                 return (object) [

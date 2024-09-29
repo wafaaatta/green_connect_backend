@@ -25,6 +25,7 @@ class AnnounceFactory extends Factory
             'category' => $this->faker->word,
             "status"=> $this->faker->randomElement(['pending', 'accepted', 'rejected']),
             "image"=> $this->faker->imageUrl,
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
         ];
     }
 }

@@ -16,12 +16,12 @@ class Event extends Model
         'organized_by',
         'location',
         'image',
-        'manager_id'
+        'manager_id',
+        'organizer_email'
     ];
 
     public function manager()
     {
         return $this->belongsTo(Manager::class);
     }
-    
 }

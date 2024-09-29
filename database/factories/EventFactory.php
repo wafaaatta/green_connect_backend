@@ -23,6 +23,7 @@ class EventFactory extends Factory
             'image' => $this->faker->imageUrl,
             'organized_by' => $this->faker->word,
             'event_date' => $this->faker->date,
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
 
             'manager_id' => 1
         ];

@@ -20,6 +20,7 @@ class ArticleFactory extends Factory
             "title"=> $this->faker->word,
             "content"=> $this->faker->word,
             "image"=> $this->faker->imageUrl,
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
                         
         ];
     }
