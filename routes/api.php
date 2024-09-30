@@ -94,7 +94,7 @@ Route::prefix('users')->group(function () {
 
     Route::post('/login', [UserController::class, 'loginUser']);
 
-    Route::put('/{id}', [UserController::class, 'update']);
+    Route::put('/{id}', [UserController::class, 'update'])->middleware('auth:sanctum,user');
 });
 
 Route::prefix('contact-submissions')->group(function () {

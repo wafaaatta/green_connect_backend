@@ -11,8 +11,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        return response()->json($users);
+        if (Auth::guard('manager')->check()) {
+            $users = User::all();
+            return response()->json($users);
+        }
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
     public function store(Request $request)
@@ -20,17 +23,26 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => [
+                'required',
+                'string',
+                'between:8,16',
+                'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).{8,16}$/'
+            ],
+
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return response()->json([
+                'message' => 'Validation errors',
+                'errors' => $validator->errors(),
+            ], 422);
         }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
         ]);
-        return response()->json($user);
+        return response()->json($user, 201);
     }
 
     public function loginUser(Request $request)
@@ -40,7 +52,7 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json($validator->errors(), status: 422);
         }
 
         if (!Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -63,6 +75,14 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'unauthenticated'], 401);
+        }
+
+        if ($user->id != $id) {
+            return response()->json(['message' => 'You are not authorized to update this user'], 403);
+        }
         $user = User::find($id);
         $user->update($request->all());
         return response()->json($user);
