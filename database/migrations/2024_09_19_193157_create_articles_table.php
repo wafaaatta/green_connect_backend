@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->string('image');
-            $table->integer('views')->default(0);
+            //$table->integer('views')->default(0);
             $table->unsignedBigInteger('article_category_id');
             $table->foreign('article_category_id')->references('id')->on('article_categories');
             $table->unsignedBigInteger('manager_id');

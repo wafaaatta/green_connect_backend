@@ -57,7 +57,7 @@ class UserController extends Controller
 
         if (!Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
             return response()->json([
-                'message' => 'Unauthorized',
+                'message' => 'Unauthorized',    
                 'status' => 401
             ], 401);
         }
@@ -65,12 +65,20 @@ class UserController extends Controller
 
         $user = Auth::guard('user')->user();
         $token = $user->createToken('auth_token')->plainTextToken;
-
+        
         return response()->json([
             'message' => 'Logged in successfully',
             'token' => $user->createToken('auth_token')->plainTextToken,
             'user' => $user
         ], 200);
+    }
+
+    public function logout(Request $request)
+    {
+        // Revoke the token that was used to authenticate the current request
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 
     public function update(Request $request, $id)

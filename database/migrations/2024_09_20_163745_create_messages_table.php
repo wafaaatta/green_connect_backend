@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->text('content');
             $table->string('sender_id');
-            $table->boolean('is_read')->default(false);
+            //$table->boolean('is_read')->default(false);
             $table->enum('message_type', ['text', 'image']);
             $table->string('image_url')->nullable();
             $table->timestamps();
