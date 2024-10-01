@@ -16,7 +16,7 @@ class ArticleSeeder extends Seeder
     public function run(): void
     {
         ArticleCategory::all()->each(function ($articleCategory) {
-            ArticleFactory::new()->count(1000)->create([
+            ArticleFactory::new()->count(20)->create([
                 'article_category_id' => $articleCategory->id,
                 'manager_id' => 1
             ]);
