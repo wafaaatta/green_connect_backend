@@ -27,7 +27,6 @@ class EventController extends Controller
             'event_date' => 'required|date',
             'location' => 'required|string',
             'organized_by' => 'required|string',
-            'manager_id' => 'required|integer|exists:managers,id',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'organizer_email' => 'required|email',
         ]);
@@ -46,7 +45,7 @@ class EventController extends Controller
             'event_date' => $request->event_date,
             'location' => $request->location,
             'organized_by' => $request->organized_by,
-            'manager_id' => $request->manager_id,
+            'manager_id' => 1,
             'image' => 'images/events/' . $imageName,
             'organizer_email' => $request->organizer_email
         ]);

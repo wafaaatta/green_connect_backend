@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (Auth::guard('manager')->check()) {
+        if ($request->user()) {
             $users = User::all();
             return response()->json($users);
         }

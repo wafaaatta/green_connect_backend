@@ -88,7 +88,8 @@ Route::prefix('messages')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [UserController::class, 'index'])->middleware('auth:sanctum, manager');
+    Route::post('/announces/other', [AnnounceController::class, 'getOtherUserAcceptedAnnounces']);
     Route::post('/', [UserController::class, 'store']);
     Route::get('/{id}', [UserController::class, 'show']);
 

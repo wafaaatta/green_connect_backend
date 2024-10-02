@@ -53,6 +53,26 @@ class AnnounceController extends Controller
         return response()->json($announce);
     }
 
+    public function getOtherUserAcceptedAnnounces(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'announce_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $announce = Announce::find($request->announce_id);
+        $id = $announce->user_id;
+        $announces = Announce::where('user_id', $id)
+            ->where('status', 'accepted')
+            ->where('id', '<>', $request->announce_id)
+            ->with('user')
+            ->get();
+        return response()->json($announces);
+    }
+
     public function declineAnnounce(Request $request, $id)
     {
         $announce = Announce::find($id);
@@ -73,7 +93,8 @@ class AnnounceController extends Controller
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'postal_code' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -94,6 +115,7 @@ class AnnounceController extends Controller
             'postal_code' => $request->postal_code,
             'user_id' => $user->id,
             'image' => 'images/announces/' . $imageName,
+            'category' => $request->category,
             'status' => 'pending',
             'request_type' => 'creation'
         ]);
