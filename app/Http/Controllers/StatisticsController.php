@@ -13,6 +13,16 @@ use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
 {
+    /**
+     * Return an object with the total count for articles, events, managers, users, announces, and contact submissions,
+     * as well as a graph of users created by month and a graph of articles, events, and announces created by month.
+     * The graph of users created by month contains the year and month of each group, and the count of users in that group.
+     * The graph of articles, events, and announces created by month contains the year and month of each group, and
+     * the count of articles, events, and announces in that group.
+     * The response also includes an object with the article counts by category name.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getSystemStatistics()
     {
         // Fetch articles with their categories

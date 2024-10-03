@@ -8,18 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $articleCategories = ArticleCategory::orderBy('created_at', 'desc')->get();
         return response()->json($articleCategories);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -37,9 +31,6 @@ class ArticleCategoryController extends Controller
         return response()->json($articleCategory);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, $id)
     {
         $articleCategory = ArticleCategory::find($id);
