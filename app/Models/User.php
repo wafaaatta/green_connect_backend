@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->hasMany(Announce::class);
     }
 
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

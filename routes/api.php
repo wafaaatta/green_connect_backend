@@ -13,8 +13,10 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
+use App\Mail\ActivationEmail;
 use App\Mail\ContactReply;
 use App\Models\Conversation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -98,7 +100,7 @@ Route::prefix('users')->group(function () {
     Route::put('/{id}', [UserController::class, 'update'])->middleware('auth:sanctum,user');
 });
 
-Route::prefix('contact-submissions')->group(function () {
+Route::prefix('contact-submissions')->middleware('throttle:5,1')->group(function () {
     Route::get('/', [ContactSubmissionController::class, 'index']);
     Route::post('/', [ContactSubmissionController::class, 'store']);
     Route::delete('/{id}', [ContactSubmissionController::class, 'destroy']);
@@ -127,6 +129,29 @@ Route::get('/mailer/test', function () {
     ]);
 });
 
+Route::get('/activation-mail/test', function () {
+    $suser = User::where('email', 'alitarek99944@gmail.com')->first();
+    if(!$suser) {
+        User::create([
+            'name' => 'Ali Tarek',
+            'email' => 'alitarek99944@gmail.com',
+            'password' => bcrypt('password')
+        ]);
+    }
+
+    $user = User::where('email', 'alitarek99944@gmail.com')->first();
+    $activationCode = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT); // Generate a 6-digit activation code
+        $activationLink = url("/activate/{$user->id}?code={$activationCode}");
+
+        // Send email
+        Mail::to($user -> email)->send(new ActivationEmail($user, $activationCode, $activationLink));
+
+        return response()->json(['message' => 'Activation email sent.']);
+});
+
 Route::get('/statistics', [StatisticsController::class, 'getSystemStatistics']);
 
 Route::middleware('auth:sanctum')->get('/validate-token', [AuthController::class, 'validateToken']);
+
+Route::get('/activate/{user}', [AuthController::class, 'activate'])->name('activate');
+Route::post('/resend-activation', [AuthController::class, 'resendActivationEmail'])->name('resend.activation');

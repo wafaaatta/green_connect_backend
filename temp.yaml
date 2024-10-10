@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: GreenConnect ArticleCategory API
+  description: API for managing Article Categories in the GreenConnect project.
+  version: 1.0.0
+  contact:
+    name: Support
+    url: https://gc-api.techconnects.fr
+    email: support@techconnects.fr
+
+servers:
+  - url: https://gc-api.techconnects.fr/api
+    description: Production server
+
+tags:
+
+
+paths:
+
+
+components:
+  schemas:
+

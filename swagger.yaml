@@ -1,0 +1,1879 @@
+openapi: 3.0.0
+info:
+  title: GreenConnect Announce API
+  description: This is the API for managing announcements in the GreenConnect project.
+  version: 1.0.0
+  contact:
+    name: Support
+    url: https://gc-api.techconnects.fr
+    email: support@techconnects.fr
+
+servers:
+  - url: https://gc-api.techconnects.fr/api
+    description: Production server
+  - name: Article Categories
+    description: API endpoints for managing article categories
+
+tags:
+  - name: Announcements
+    description: API endpoints for managing announcements
+
+  - name: Articles
+    description: API endpoints for managing articles
+
+  - name: Article Categories
+    description: API endpoints for managing article categories
+
+  - name: Events
+    description: Operations related to events
+
+paths:
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get all users
+      responses:
+        '200':
+          description: Successfully retrieved users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '403':
+          description: Unauthorized
+
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: Unprocessable Entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserValidationError'
+
+  /users/login:
+    post:
+      tags:
+        - User
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        '401':
+          description: Unauthorized - invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUnauthorizedError'
+        '422':
+          description: Unprocessable Entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserValidationError'
+
+  /users/logout:
+    post:
+      tags:
+        - User
+      summary: Log out a user
+      responses:
+        '200':
+          description: Logged out successfully
+
+  /users/{id}:
+    put:
+      tags:
+        - User
+      summary: Update user details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthenticated
+        '403':
+          description: You are not authorized to update this user
+        '404':
+          description: User not found
+  /messages/{conversation_id}:
+    get:
+      tags:
+        - Message
+      summary: Get all messages from a specific conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '404':
+          description: Conversation not found
+
+  /messages:
+    post:
+      tags:
+        - Message
+      summary: Create a new message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreate'
+      responses:
+        '201':
+          description: Message created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '422':
+          description: Unprocessable Entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageValidationError'
+
+  /messages/{id}:
+    put:
+      tags:
+        - Message
+      summary: Update an existing message
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageUpdate'
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '422':
+          description: Unprocessable Entity - validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageValidationError'
+        '404':
+          description: Message not found
+
+    delete:
+      tags:
+        - Message
+      summary: Delete an existing message
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Message deleted successfully
+        '404':
+          description: Message not found
+  /managers:
+    get:
+      tags:
+        - Manager
+      summary: Get a list of all managers
+      responses:
+        '200':
+          description: Successfully retrieved the list of managers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager'
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - Manager
+      summary: Create a new manager
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerCreate'
+      responses:
+        '201':
+          description: Manager created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '400':
+          description: Bad request, validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerValidationError'
+
+  /managers/{id}:
+    put:
+      tags:
+        - Manager
+      summary: Update a manager
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerUpdate'
+      responses:
+        '200':
+          description: Manager updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '404':
+          description: Manager not found
+
+    delete:
+      tags:
+        - Manager
+      summary: Delete a manager
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Manager deleted successfully
+        '404':
+          description: Manager not found
+
+  /managers/login:
+    post:
+      tags:
+        - Manager
+      summary: Login a manager
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerLogin'
+      responses:
+        '200':
+          description: Manager logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized access, invalid credentials
+
+  /managers/logout:
+    post:
+      tags:
+        - Manager
+      summary: Logout the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Manager logged out successfully
+
+  /events:
+    get:
+      tags:
+        - Events
+      summary: Get a list of events
+      parameters:
+        - in: query
+          name: size
+          schema:
+            type: integer
+          description: Limit the number of returned events
+      responses:
+        '200':
+          description: A list of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          description: Server error when retrieving events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventError'
+    post:
+      tags:
+        - Events
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateEvent'
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventValidationError'
+        '500':
+          description: Server error when creating an event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventError'
+
+  /events/{id}:
+    get:
+      tags:
+        - Events
+      summary: Get a specific event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The event ID
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNotFoundError'
+        '500':
+          description: Server error when retrieving the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventError'
+
+    put:
+      tags:
+        - Events
+      summary: Update an event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The event ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateEvent'
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNotFoundError'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventValidationError'
+        '500':
+          description: Server error when updating the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventError'
+
+    delete:
+      tags:
+        - Events
+      summary: Delete an event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The event ID
+      responses:
+        '200':
+          description: Event deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNotFoundError'
+        '500':
+          description: Server error when deleting the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventError'
+  /api/conversations:
+    get:
+      summary: Get all conversations
+      description: Retrieve all conversations.
+      tags:
+        - Conversations
+      responses:
+        '200':
+          description: A list of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+
+    post:
+      summary: Create a new conversation
+      description: Create a unique conversation between a creator, a receiver, and an announcement.
+      tags:
+        - Conversations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationCreateRequest'
+      responses:
+        '200':
+          description: Successfully created a new conversation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+        '422':
+          description: Validation error occurred or conversation already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /api/conversations/announce/{id}:
+    get:
+      summary: Get conversations by announce ID
+      description: Retrieve conversations associated with a specific announcement.
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the announcement.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+
+  /api/conversations/user:
+    get:
+      summary: Get conversations for the logged-in user
+      description: Retrieve all conversations where the logged-in user is either the creator or receiver.
+      tags:
+        - Conversations
+      responses:
+        '200':
+          description: A list of user-related conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConversationWithRelations'
+
+  /api/conversations/{id}/messages:
+    post:
+      summary: Create a message in a conversation
+      description: Add a new message to an existing conversation.
+      tags:
+        - Messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the conversation.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreateRequest'
+      responses:
+        '200':
+          description: Successfully created a new message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '422':
+          description: Validation error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /api/conversations/{id}:
+    delete:
+      summary: Delete a conversation
+      description: Delete a conversation and all associated messages.
+      tags:
+        - Conversations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the conversation.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Conversation deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSuccessResponse'
+  /api/contact-submissions:
+    get:
+      summary: Get all contact submissions
+      description: Retrieve all contact form submissions ordered by creation date in descending order.
+      tags:
+        - Contact Submissions
+      responses:
+        '200':
+          description: A list of contact submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContactSubmission'
+
+    post:
+      summary: Submit a contact form
+      description: Create a new contact submission.
+      tags:
+        - Contact Submissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactSubmissionCreateRequest'
+      responses:
+        '200':
+          description: Successfully created a new contact submission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactSubmission'
+        '400':
+          description: Validation error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactSubmissionValidationErrorResponse'
+
+  /api/contact-submissions/{id}:
+    delete:
+      summary: Delete a contact submission
+      description: Delete a contact submission by its ID.
+      tags:
+        - Contact Submissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the contact submission to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the contact submission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactSubmission'
+        '404':
+          description: Submission not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+  /api/auth/validate-token:
+    get:
+      summary: Validate user token
+      description: Check if the provided Sanctum token is valid and return the associated user.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Token is valid, and the user is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidTokenResponse'
+        '401':
+          description: Token is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidTokenResponse'
+  /articles:
+    get:
+      tags:
+        - Articles
+      summary: Retrieve all articles
+      description: Fetches a list of all articles, optionally limited by a `size` query parameter.
+      parameters:
+        - name: size
+          in: query
+          description: Limit the number of articles returned
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '500':
+          description: Server error
+
+    post:
+      tags:
+        - Articles
+      summary: Create a new article
+      description: Creates a new article with the provided title, content, category, manager, and image.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArticleCreateRequest'
+      responses:
+        '201':
+          description: Article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleValidationError'
+        '500':
+          description: Server error
+
+  /articles/{id}:
+    get:
+      tags:
+        - Articles
+      summary: Retrieve a specific article
+      description: Fetches the details of a specific article by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article
+      responses:
+        '200':
+          description: Article details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '404':
+          description: Article not found
+        '500':
+          description: Server error
+
+    put:
+      tags:
+        - Articles
+      summary: Update an article
+      description: Updates the details of an existing article. If a new image is provided, it will be updated.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdateRequest'
+      responses:
+        '200':
+          description: Article updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleValidationError'
+        '404':
+          description: Article not found
+        '500':
+          description: Server error
+
+    delete:
+      tags:
+        - Articles
+      summary: Delete an article
+      description: Deletes a specific article by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article
+      responses:
+        '204':
+          description: Article deleted successfully
+        '404':
+          description: Article not found
+        '500':
+          description: Server error
+
+  /articles/category/{id}:
+    get:
+      tags:
+        - Articles
+      summary: Retrieve articles by category
+      description: Fetches all articles belonging to a specific category by the category's ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article category
+      responses:
+        '200':
+          description: A list of articles in the category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '404':
+          description: Category not found
+        '500':
+          description: Server error
+  /article-categories:
+    get:
+      tags:
+        - Article Categories
+      summary: Retrieve all article categories
+      description: Fetches a list of all article categories, ordered by creation date.
+      responses:
+        '200':
+          description: A list of article categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleCategory'
+        '500':
+          description: Server error
+
+    post:
+      tags:
+        - Article Categories
+      summary: Create a new article category
+      description: Creates a new article category.
+      requestBody:
+        required: true
+        description: Data required to create a new article category
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCategoryCreateRequest'
+      responses:
+        '201':
+          description: Article category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCategory'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleCategoryValidationError'
+        '500':
+          description: Server error
+
+  /article-categories/{id}:
+    get:
+      tags:
+        - Article Categories
+      summary: Retrieve a specific article category
+      description: Fetches the details of a specific article category by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article category
+      responses:
+        '200':
+          description: Article category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCategory'
+        '404':
+          description: Article category not found
+        '500':
+          description: Server error
+
+    put:
+      tags:
+        - Article Categories
+      summary: Update an article category
+      description: Updates the details of an existing article category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article category
+      requestBody:
+        required: true
+        description: Data to update the article category
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCategoryUpdateRequest'
+      responses:
+        '200':
+          description: Article category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCategory'
+        '400':
+          description: Validation error
+        '404':
+          description: Article category not found
+        '500':
+          description: Server error
+
+    delete:
+      tags:
+        - Article Categories
+      summary: Delete an article category
+      description: Deletes an article category and its related articles.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the article category
+      responses:
+        '204':
+          description: Article category deleted successfully
+        '404':
+          description: Article category not found
+        '500':
+          description: Server error
+
+  /announcements:
+    get:
+      tags:
+        - Announcements
+      summary: Retrieve a list of all announcements
+      description: Fetches a list of all available announcements in the GreenConnect project.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Announce'
+        '500':
+          description: Server error
+
+    post:
+      tags:
+        - Announcements
+      summary: Create a new announcement
+      description: Allows an admin or authorized user to create a new announcement.
+      requestBody:
+        description: Announcement object that needs to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Announce'
+      responses:
+        '201':
+          description: Announcement created successfully
+        '400':
+          description: Invalid input data
+        '500':
+          description: Server error
+
+  /announcements/{announceId}:
+    get:
+      tags:
+        - Announcements
+      summary: Retrieve a specific announcement
+      description: Fetches details of a specific announcement by its ID.
+      parameters:
+        - name: announceId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the announcement
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announce'
+        '404':
+          description: Announcement not found
+        '500':
+          description: Server error
+
+    put:
+      tags:
+        - Announcements
+      summary: Update an announcement
+      description: Updates the details of an existing announcement.
+      parameters:
+        - name: announceId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the announcement
+      requestBody:
+        description: Updated announcement object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Announce'
+      responses:
+        '200':
+          description: Announcement updated successfully
+        '400':
+          description: Invalid input data
+        '404':
+          description: Announcement not found
+        '500':
+          description: Server error
+
+    delete:
+      tags:
+        - Announcements
+      summary: Delete an announcement
+      description: Deletes an announcement by its ID.
+      parameters:
+        - name: announceId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the announcement
+      responses:
+        '204':
+          description: Announcement deleted successfully
+        '404':
+          description: Announcement not found
+        '500':
+          description: Server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - name
+        - email
+
+    UserCreate:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 16
+          pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).{8,16}$'
+
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    UserLoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 16
+          pattern: '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).{8,16}$'
+
+    UserValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    UserUnauthorizedError:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+      example:
+        message: Unauthorized
+        status: 401
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        sender_id:
+          type: integer
+        receiver_id:
+          type: integer
+        conversation_id:
+          type: integer
+        reply_message_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - content
+        - sender_id
+        - conversation_id
+
+    MessageCreate:
+      type: object
+      required:
+        - content
+        - conversation_id
+      properties:
+        content:
+          type: string
+        conversation_id:
+          type: integer
+        message_type:
+          type: string
+          enum: [text, image]
+        reply_message_id:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+
+    MessageUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+
+    MessageValidationError:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            type: string
+        conversation_id:
+          type: array
+          items:
+            type: string
+        message_type:
+          type: array
+          items:
+            type: string
+
+    MessageDeletionError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: Message not found or already deleted
+    Manager:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ManagerCreate:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    ManagerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+
+    ManagerLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        token:
+          type: string
+        manager:
+          $ref: '#/components/schemas/Manager'
+
+    ManagerValidationError:
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            type: string
+        email:
+          type: array
+          items:
+            type: string
+        password:
+          type: array
+          items:
+            type: string
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Event ID
+        title:
+          type: string
+          description: Event title
+        description:
+          type: string
+          description: Event description
+        event_date:
+          type: string
+          format: date
+          description: Date of the event
+        location:
+          type: string
+          description: Event location
+        organized_by:
+          type: string
+          description: Organizer of the event
+        manager_id:
+          type: integer
+          description: Manager ID
+        image:
+          type: string
+          description: Event image path
+        organizer_email:
+          type: string
+          format: email
+          description: Organizer email
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateEvent:
+      type: object
+      required:
+        - title
+        - description
+        - event_date
+        - location
+        - organized_by
+        - image
+        - organizer_email
+      properties:
+        title:
+          type: string
+          description: Title of the event
+        description:
+          type: string
+          description: Description of the event
+        event_date:
+          type: string
+          format: date
+          description: Event date
+        location:
+          type: string
+          description: Event location
+        organized_by:
+          type: string
+          description: Organizer of the event
+        image:
+          type: string
+          format: binary
+          description: Event image file
+        organizer_email:
+          type: string
+          format: email
+          description: Organizer's email
+
+    UpdateEvent:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        event_date:
+          type: string
+          format: date
+        location:
+          type: string
+        organized_by:
+          type: string
+        image:
+          type: string
+          format: binary
+        manager_id:
+          type: integer
+
+    DeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Event deleted successfully
+
+    EventError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: An error occurred while processing the request.
+
+    EventValidationError:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+
+    EventNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Event not found
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        creator_id:
+          type: integer
+          example: 5
+        receiver_id:
+          type: integer
+          example: 6
+        announce_id:
+          type: integer
+          example: 2
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-10-03T14:48:00.000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-10-03T14:48:00.000Z
+
+    ConversationWithRelations:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Conversation'
+      properties:
+        announce:
+          $ref: '#/components/schemas/Announce'
+        creator:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+
+    ConversationCreateRequest:
+      type: object
+      required:
+        - receiver_id
+        - announce_id
+      properties:
+        receiver_id:
+          type: integer
+          example: 6
+        announce_id:
+          type: integer
+          example: 2
+
+    MessageCreateRequest:
+      type: object
+      required:
+        - content
+        - sender_id
+        - receiver_id
+        - conversation_id
+      properties:
+        content:
+          type: string
+          example: "This is a message content"
+        sender_id:
+          type: integer
+          example: 5
+        receiver_id:
+          type: integer
+          example: 6
+        conversation_id:
+          type: integer
+          example: 1
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        example:
+          errors:
+            receiver_id:
+              - "The receiver_id field is required."
+            announce_id:
+              - "The announce_id field is required."
+
+    DeleteSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Conversation deleted successfully."
+    ContactSubmission:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: johndoe@example.com
+        message:
+          type: string
+          example: "I have an inquiry about your services."
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-10-03T14:48:00.000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-10-03T14:48:00.000Z
+
+    ContactSubmissionCreateRequest:
+      type: object
+      required:
+        - name
+        - email
+        - message
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        message:
+          type: string
+          example: "I have an inquiry about your services."
+
+    CreateContactSubmissionValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        example:
+          errors:
+            email:
+              - "The email field is required."
+            message:
+              - "The message field is required."
+
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Contact submission not found."
+    ValidTokenResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Token is valid
+        user:
+          $ref: '#/components/schemas/User'
+
+    InvalidTokenResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid token
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the article
+          example: 1
+        title:
+          type: string
+          description: Title of the article
+          example: "How to Learn Laravel"
+        content:
+          type: string
+          description: Content of the article
+          example: "Laravel is a popular PHP framework..."
+        image:
+          type: string
+          description: URL of the article image
+          example: "images/articles/1.jpg"
+        views:
+          type: integer
+          description: Number of views the article has received
+          example: 150
+        article_category_id:
+          type: integer
+          description: ID of the article category
+          example: 1
+        manager_id:
+          type: integer
+          description: ID of the manager responsible for the article
+          example: 2
+        created_at:
+          type: string
+          format: date-time
+          description: Date when the article was created
+          example: "2023-10-03T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Date when the article was last updated
+          example: "2023-10-03T12:00:00Z"
+        articleCategory:
+          $ref: '#/components/schemas/ArticleCategory'
+        manager:
+          $ref: '#/components/schemas/Manager'
+
+    ArticleCreateRequest:
+      type: object
+      required:
+        - title
+        - content
+        - article_category_id
+        - manager_id
+        - image
+      properties:
+        title:
+          type: string
+          description: Title of the article
+        content:
+          type: string
+          description: Content of the article
+        article_category_id:
+          type: integer
+          description: ID of the article category
+        manager_id:
+          type: integer
+          description: ID of the manager responsible for the article
+        image:
+          type: string
+          format: binary
+          description: Image file for the article
+
+    ArticleUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the article
+        content:
+          type: string
+          description: Content of the article
+        article_category_id:
+          type: integer
+          description: ID of the article category
+        manager_id:
+          type: integer
+          description: ID of the manager responsible for the article
+        image:
+          type: string
+          format: binary
+          description: Updated image file for the article
+
+
+    CreateArticleValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Validation error message
+          example: "The title field is required."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            title:
+              - "The title field is required."
+
+    ArticleCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the article category
+          example: 1
+        name:
+          type: string
+          description: The name of the article category
+          example: "Tech"
+        created_at:
+          type: string
+          format: date-time
+          description: Date when the category was created
+          example: "2023-10-03T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Date when the category was last updated
+          example: "2023-10-03T12:00:00Z"
+
+    ArticleCategoryCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name of the article category
+          example: "Lifestyle"
+
+    ArticleCategoryUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the article category
+          example: "Business"
+
+    CreateArticleCategoryValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Validation error message
+          example: "The name field is required."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            name:
+              - "The name field is required."
+    Announce:
+      type: object
+      required:
+        - title
+        - description
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique ID of the announcement
+          example: "614c1c9a-42bb-45f6-9c18-df3d7c0a9c6b"
+        title:
+          type: string
+          description: The title of the announcement
+          example: "GreenConnect Project Update"
+        description:
+          type: string
+          description: A detailed description of the announcement
+          example: "We have just launched a new feature for the GreenConnect platform."
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the announcement was created
+          example: "2023-10-02T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time the announcement was last updated
+          example: "2023-10-03T12:00:00Z"

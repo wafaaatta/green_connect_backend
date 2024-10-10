@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ActivationEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -41,7 +43,13 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
+            'activation_code' => str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT), // Generate a 6-digit activation code
         ]);
+
+        // Send the activation email
+        $activationLink = url("/activate/{$user->id}?code={$user->activation_code}");
+        Mail::to($user->email)->send(new ActivationEmail($user, $user->activation_code, $activationLink));
+
         return response()->json($user, 201);
     }
 
@@ -56,8 +64,15 @@ class UserController extends Controller
         }
 
         if (!Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Incorrect email',
+                    'status' => 401
+                ], 401);
+            }
             return response()->json([
-                'message' => 'Unauthorized',    
+                'message' => 'Password mismatch',
                 'status' => 401
             ], 401);
         }
@@ -65,7 +80,7 @@ class UserController extends Controller
 
         $user = Auth::guard('user')->user();
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json([
             'message' => 'Logged in successfully',
             'token' => $user->createToken('auth_token')->plainTextToken,
