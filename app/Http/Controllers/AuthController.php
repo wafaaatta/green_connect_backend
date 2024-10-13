@@ -33,7 +33,7 @@ class AuthController extends Controller
     {
         // Check if the activation code matches
         if ($request->input('code') !== $user->activation_code) {
-            return response()->json(['error' => 'Invalid activation code.'], 400);
+            return view('auth.verify');
         }
 
         // Activate the user's account
@@ -41,7 +41,8 @@ class AuthController extends Controller
         $user->activation_code = null; // Clear the activation code after verification
         $user->save();
 
-        return response()->json(['message' => 'Your account has been successfully activated.']);
+        return view('auth.verify')->with('status', 'Your account has been activated successfully!');
+
     }
 
     public function resendActivationEmail(Request $request)

@@ -46,6 +46,7 @@ class StatisticsController extends Controller
                 return $group->count(); // Count users in each group
             });
 
+
         // Group articles, events, and announces by month and count them
         $groupedStatistics = collect();
 

@@ -16,10 +16,10 @@ class AnnounceController extends Controller
      */
     public function index()
     {
+
         // Get all announces that are not rejected. Order them by status (pending first, then accepted)
         // and then by creation date (newest first).
-        $announces = Announce::whereNotIn('status', ['rejected'])
-            ->orderByRaw('FIELD(status, "pending", "accepted")')
+        $announces = Announce::where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
         // Return the announces

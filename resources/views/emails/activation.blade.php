@@ -62,17 +62,9 @@
             color: #333;
             border-radius: 5px;
         }
-        .btn-activate {
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            display: inline-block;
-            font-size: 18px;
-        }
+        
         .btn-activate:hover {
-            background-color: #45a049;
+            text-decoration: underline
         }
     </style>
 </head>
@@ -86,15 +78,14 @@
         <tr>
             <td class="email-body">
                 <h2>Hi {{ $user->name }},</h2>
-                <p>Welcome! We’re excited to have you get started. First, you need to confirm your account. Use the activation code below to activate your account and get started.</p>
+                <p>Welcome! We’re excited to have you get started. First, you need to confirm your account. Use the activation link to activate your account and get started.</p>
 
-                <div class="activation-code">
-                    {{ $activationCode }}
-                </div>
 
                 <p>If you prefer, you can also activate your account by clicking the button below:</p>
 
-                <a href="{{ $activationLink }}" class="btn-activate">Activate Account</a>
+                <a href="{{ $activationLink }}" class="btn-activate" >
+                    {{ $activationLink }}
+                </a>
 
                 <p>If you didn’t create an account, you can safely ignore this email.</p>
 

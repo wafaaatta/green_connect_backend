@@ -61,14 +61,14 @@ Route::get('announces/accepted', [AnnounceController::class, 'getAcceptedAnnounc
 
 
 Route::prefix('announces')->middleware('auth:sanctum')->group(function () {
-    Route::get('/', [AnnounceController::class, 'index']);
+    Route::get('/', [AnnounceController::class, 'index'])->middleware('auth:sanctum,manager');
     Route::post('/', [AnnounceController::class, 'store']);
     Route::get('/{id}', [AnnounceController::class, 'show']);
     Route::delete('/{id}', [AnnounceController::class, 'destroy']);
     Route::put('/{id}', [AnnounceController::class, 'update']);
 
-    Route::post('/{id}/accept', [AnnounceController::class, 'acceptAnnounce']);
-    Route::post('/{id}/reject', [AnnounceController::class, 'declineAnnounce']);
+    Route::post('/{id}/accept', [AnnounceController::class, 'acceptAnnounce'])->middleware('auth:sanctum,manager');
+    Route::post('/{id}/reject', [AnnounceController::class, 'declineAnnounce'])->middleware('auth:sanctum,manager');
 });
 
 Route::prefix('conversations')->middleware('auth:sanctum')->group(function () {
@@ -130,16 +130,16 @@ Route::get('/mailer/test', function () {
 });
 
 Route::get('/activation-mail/test', function () {
-    $suser = User::where('email', 'alitarek99944@gmail.com')->first();
+    $suser = User::where('email', 'wafaaatta04@gmail.com')->first();
     if(!$suser) {
         User::create([
-            'name' => 'Ali Tarek',
-            'email' => 'alitarek99944@gmail.com',
+            'name' => 'Wafaa ATTA',
+            'email' => 'wafaaatta04@gmail.com',
             'password' => bcrypt('password')
         ]);
     }
 
-    $user = User::where('email', 'alitarek99944@gmail.com')->first();
+    $user = User::where('email', 'wafaaatta04@gmail.com')->first();
     $activationCode = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT); // Generate a 6-digit activation code
         $activationLink = url("/activate/{$user->id}?code={$activationCode}");
 
