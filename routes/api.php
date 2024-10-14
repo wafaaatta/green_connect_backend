@@ -153,5 +153,5 @@ Route::get('/statistics', [StatisticsController::class, 'getSystemStatistics']);
 
 Route::middleware('auth:sanctum')->get('/validate-token', [AuthController::class, 'validateToken']);
 
-Route::get('/activate/{user}', [AuthController::class, 'activate'])->name('activate');
+Route::get('/activate/{id}', [AuthController::class, 'activate'])->name('activate');
 Route::post('/resend-activation', [AuthController::class, 'resendActivationEmail'])->name('resend.activation');

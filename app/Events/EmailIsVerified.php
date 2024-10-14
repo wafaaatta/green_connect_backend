@@ -23,11 +23,11 @@ class EmailIsVerified implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new Channel('email-verification-channel');
+        return ['email-verification-channel'];
     }
 
     public function broadcastAs()
     {
-        return 'email.verified';
+        return 'email-verification.success';
     }
 }

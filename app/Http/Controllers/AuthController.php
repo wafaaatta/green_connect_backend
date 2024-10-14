@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\EmailIsVerified;
 use App\Mail\ActivationEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,17 +30,23 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function activate(User $user, Request $request)
+    public function activate(Request $request, $id)
     {
+        
+        $user = User::find($id);
         // Check if the activation code matches
         if ($request->input('code') !== $user->activation_code) {
-            return view('auth.verify');
+            event(new EmailIsVerified($user->id));
+
+            return view('auth.verify')->with('status', 'Invalid activation code. Please try again.');
         }
 
         // Activate the user's account
         $user->email_verified_at = now();
         $user->activation_code = null; // Clear the activation code after verification
         $user->save();
+
+        event(new EmailIsVerified($user->id));
 
         return view('auth.verify')->with('status', 'Your account has been activated successfully!');
 
@@ -58,7 +65,7 @@ class AuthController extends Controller
         }
 
         // Resend activation email
-        $activationLink = url("/activate/{$user->id}?code={$user->activation_code}");
+        $activationLink = url("/api/activate/{$user->id}?code={$user->activation_code}");
         Mail::to($user->email)->send(new ActivationEmail($user, $user->activation_code, $activationLink));
 
         return response()->json(['message' => 'Activation email resent. Please check your inbox.']);
