@@ -328,10 +328,11 @@ class AnnounceController extends Controller
 
         // If the request contains an image, store it and update the announce
         if ($request->hasFile('image')) {
-            // Get the image from the request
             $image = $request->file('image');
+            $imageName = time() . '.' . $image->extension();
+            $image->move(public_path('images/announces'), $imageName);
             // Store the image
-            $announce->image = $image->storeAs('images/announces', $announce->id . '.' . $image->extension());
+            $announce->image = 'images/announces/' . $imageName;
         }
 
         // Set the request type to modification and the status to pending
