@@ -18,7 +18,8 @@ class Announce extends Model
         'status',
         'image',
         'user_id',
-        'category'
+        'category',
+        'request_type',
     ];
 
     public function user()

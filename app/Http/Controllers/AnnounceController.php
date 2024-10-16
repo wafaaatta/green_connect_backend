@@ -270,7 +270,7 @@ class AnnounceController extends Controller
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'postal_code' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:webp,svg|max:2048',
             'category' => 'required|string|max:255',
         ]);
 
