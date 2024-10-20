@@ -12,6 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+//La classe ConversationCreated implémente l'interface ShouldBroadcastNow
 class ConversationCreated implements ShouldBroadcastNow
 {
     use Dispatchable ,InteractsWithSockets, SerializesModels;

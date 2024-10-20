@@ -81,7 +81,7 @@
                 <p>Welcome! We’re excited to have you get started. First, you need to confirm your account. Use the activation link to activate your account and get started.</p>
 
 
-                <p>If you prefer, you can also activate your account by clicking the button below:</p>
+                <p>If you prefer, you can also activate your account by clicking the link below:</p>
 
                 <a href="{{ $activationLink }}" class="btn-activate" >
                     {{ $activationLink }}

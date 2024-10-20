@@ -48,7 +48,7 @@ class UserController extends Controller
 
         // Send the activation email
         $activationLink = url("/api/activate/{$user->id}?code={$user->activation_code}");
-        Mail::to($user->email)->send(new ActivationEmail($user, $user->activation_code, $activationLink));
+        Mail::to($user->email)->send(new ActivationEmail($user,  $activationLink));
 
         return response()->json($user, 201);
     }

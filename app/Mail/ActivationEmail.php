@@ -16,10 +16,9 @@ class ActivationEmail extends Mailable
     public $activationCode;
     public $activationLink;
 
-    public function __construct(User $user, $activationCode, $activationLink)
+    public function __construct(User $user, $activationLink)
     {
         $this->user = $user;
-        $this->activationCode = $activationCode;
         $this->activationLink = $activationLink;
     }
 
@@ -29,7 +28,6 @@ class ActivationEmail extends Mailable
                     ->subject('Activate Your Account')
                     ->with([
                         'user' => $this->user,
-                        'activationCode' => $this->activationCode,
                         'activationLink' => $this->activationLink
                     ]);
     }
