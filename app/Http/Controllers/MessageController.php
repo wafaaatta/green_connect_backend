@@ -28,9 +28,10 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'content' => 'required|string|max:255',
             'conversation_id' => 'required|integer|exists:conversations,id',
             'message_type' => 'nullable|string|in:text,image|default:text',
+            'content' => 'required_without:image|string|max:255',
+            'image' => 'required_without:content|file|image'
         ]);
 
         if ($validator->fails()) {
@@ -39,26 +40,28 @@ class MessageController extends Controller
 
         $user = $request->user();
 
-        $message = Message::create([
-            'content' => $request['content'],
+        $messageData = [
             'sender_id' => $user->id,
             'conversation_id' => $request->conversation_id,
             'message_type' => $request->message_type,
-        ]);
+        ];
 
-        if ($request->message_type == 'image') {
+        if ($request->has('content')) {
+            $messageData['content'] = $request->content;
+        }
+
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images/messages'), $imageName);
-
-            $message->image_url = 'images/messages/' . $imageName;
+            $messageData['image_url'] = 'images/messages/' . $imageName;
         }
 
         if ($request->reply_message_id) {
-            $message->reply_message_id = $request->reply_message_id;
+            $messageData['reply_message_id'] = $request->reply_message_id;
         }
 
-        $message->save();
+        $message = Message::create($messageData);
 
         event(new MessageCreated($message));
 
