@@ -46,8 +46,8 @@ class MessageController extends Controller
             'message_type' => $request->message_type,
         ];
 
-        if ($request->has('content')) {
-            $messageData['content'] = $request->content;
+        if ($request['content']) {
+            $messageData['content'] = $request['content'];
         }
 
         if ($request->hasFile('image')) {
